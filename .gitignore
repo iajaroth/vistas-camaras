@@ -1,0 +1,28 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+backend/staticfiles/
+
+# Node
+node_modules/
+frontend/.next/
+frontend/out/
+
+# IDE
+.vscode/
+.idea/
+
+# Docker
+media/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kiro
+.kiro/
