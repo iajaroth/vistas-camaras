@@ -10,6 +10,16 @@ DEBUG = False
 # Hosts
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
+# CSRF trusted origins (HTTPS domains behind the Coolify/Traefik proxy)
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{h.strip()}"
+    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if h.strip() and h.strip() != "localhost"
+]
+
+# Trust the proxy's X-Forwarded-Proto header so SSL detection works behind Traefik
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Security
 SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "1") == "1"
 SECURE_HSTS_SECONDS = 31536000
