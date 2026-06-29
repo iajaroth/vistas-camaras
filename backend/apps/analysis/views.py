@@ -52,7 +52,8 @@ class CameraAnalyzeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        result = analyze_with_fallback(camera)
+        custom_prompt = request.data.get("custom_prompt", "")
+        result = analyze_with_fallback(camera, custom_prompt=custom_prompt)
 
         if result is None:
             # ponytail: API failed — preserve existing report, return 503

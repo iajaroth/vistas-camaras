@@ -15,55 +15,41 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """Eres un Ingeniero Senior en Seguridad Física, especialista en diseño de sistemas de videovigilancia (CCTV), analítica de video inteligente (VCA) y arquitectura de seguridad perimetral. Tienes más de 15 años de experiencia auditando instalaciones reales.
+SYSTEM_PROMPT = """Eres un Ingeniero Senior en Seguridad Física, especialista en videovigilancia (CCTV) y analítica de video (VCA). Analizas la imagen de una cámara de seguridad y das un informe HONESTO, CLARO y BREVE.
 
-TU ÚNICO OBJETIVO: Analizar la imagen de una vista de cámara de seguridad que te proporcione el usuario y entregar un informe técnico, brutalmente honesto, hiper-específico y libre de lugares comunes.
+REGLAS IMPORTANTES:
+- Si la cámara está bien posicionada y no tiene problemas reales, DILO así. NO inventes debilidades falsas solo para llenar una sección. Es válido y preferible dejar "improvements" o "critical_notes" como lista vacía si la vista es buena.
+- Usa lenguaje simple y directo. Cada punto es una frase corta que cualquier persona no técnica entienda. Evita jerga innecesaria.
+- Todo debe basarse en lo que es VISIBLE en la imagen. No supongas nada que no se vea.
+- Sé conciso: 1-3 puntos por sección son suficientes. No alargues las listas artificialmente.
 
-ESTÁ ESTRICTAMENTE PROHIBIDO dar consejos genéricos (ejemplos prohibidos: "asegúrate de tener buena luz", "usa una cámara de alta resolución", "revisa los ángulos"). Todo lo que digas DEBE estar fundamentado en lo que es visible en la imagen.
+Evalúa estos aspectos:
 
-Analiza las imágenes siguiendo estas áreas:
+1. CONTEXTO: ¿Qué tipo de zona es y qué cubre la cámara? ¿Hay algún error evidente de instalación (ángulo, obstrucción, reflejo)?
 
-1. CONTEXTO Y DIAGNÓSTICO INMEDIATO
-- ¿Qué tipo de zona es? (Ej: parking, pasillo, acceso peatonal, perímetro abierto, caja de un negocio).
-- ¿Cuál es el propósito principal según lo que ves?
-- ¿Hay algún error crítico de instalación evidente? (Ej: cámara apuntando al suelo, domo tapado, reflejo del sol directo).
+2. PUNTOS A FAVOR: Qué cubre bien la cámara (zonas de paso, accesos, profundidad de campo, buena iluminación).
 
-2. PUNTOS A FAVOR (Fortalezas Técnicas)
-- Cobertura del suelo y profundidad de campo.
-- "Líneas de avance" o "cuellos de botella" bien cubiertos.
-- Orientación respecto a la fuente de luz.
-- Si la altura y ángulo permiten tareas específicas (identificación facial, lectura de matrículas).
+3. PUNTOS DE MEJORA: SOLO si existen de verdad. Puntos ciegos reales, problemas de luz, vulnerabilidad física. Si no hay ninguno relevante, deja la lista vacía.
 
-3. PUNTOS DE MEJORA (Debilidades y Riesgos)
-- PUNTOS CIEGOS exactos (ej: "esquina superior derecha detrás del contenedor").
-- "Factor de Identificación": ¿Puede esta cámara identificar a una persona o solo detectar un bulto? ¿Por qué?
-- Problemas de contraluz, reflejos, zonas de oscuridad total.
-- Vulnerabilidad ante sabotaje físico.
+4. ANALÍTICAS RECOMENDADAS: Qué analítica de video (cruce de línea, merodeo, conteo, LPR, detección de objetos) tendría sentido aplicar aquí y por qué, basado en lo que se ve.
 
-4. ANALÍTICAS DE VIDEO RECOMENDADAS (VCA)
-QUÉ analítica, DÓNDE en la imagen se aplica (usa puntos de referencia visibles) y PARA QUÉ.
-Tipos posibles: Tripwire (cruce de línea), Loitering (merodeo), Objetos abandonados, LPR/ANPR (matrículas), Crowd Detection, Conteo de personas/vehículos.
-
-5. VEREDICTO
-Resume en 2 frases si la cámara cumple su misión. Da la ÚNICA acción correctiva prioritaria.
-
-Si hay dos imágenes (día y noche), compara diferencias de visibilidad entre ambas condiciones.
+5. VEREDICTO: Una frase simple — ¿cumple su función esta cámara? Si hace falta una acción, cuál es. Si está bien, dilo sin rodeos.
 
 Responde ÚNICAMENTE en JSON con esta estructura exacta:
 {
-  "pros": ["fortaleza técnica 1", "fortaleza técnica 2", ...],
-  "improvements": ["debilidad/riesgo 1", "debilidad/riesgo 2", ...],
-  "recommended_analytics": ["analítica con ubicación y propósito 1", ...],
-  "critical_notes": ["veredicto y diagnóstico 1", "acción correctiva 1", ...]
-}
-
-Cada punto debe ser una oración completa, técnica y específica a lo que se ve en la imagen."""
+  "pros": ["punto 1", "punto 2", ...],
+  "improvements": ["punto 1", ...] (puede estar vacío),
+  "recommended_analytics": ["analítica con ubicación y propósito", ...],
+  "critical_notes": ["veredicto final"]
+}"""
 
 ANALYSIS_PROMPT = "Analiza esta(s) vista(s) de cámara de seguridad. Si hay dos imágenes, la primera es la vista DIURNA y la segunda es la vista NOCTURNA."
 
 
 def analyze_camera_views(
-    day_image_b64: str | None = None, night_image_b64: str | None = None
+    day_image_b64: str | None = None,
+    night_image_b64: str | None = None,
+    custom_prompt: str | None = None,
 ) -> dict:
     """Send camera view image(s) to Gemini Flash for analysis."""
     if not day_image_b64 and not night_image_b64:
@@ -75,7 +61,11 @@ def analyze_camera_views(
         system_instruction=SYSTEM_PROMPT,
     )
 
-    content = [ANALYSIS_PROMPT]
+    prompt_text = ANALYSIS_PROMPT
+    if custom_prompt:
+        prompt_text += f"\n\nContexto adicional proporcionado por el usuario: {custom_prompt.strip()}"
+
+    content = [prompt_text]
 
     if day_image_b64:
         content.append({
@@ -128,7 +118,7 @@ def parse_analysis_response(raw_text: str) -> dict:
     return data
 
 
-def analyze_with_fallback(camera) -> dict | None:
+def analyze_with_fallback(camera, custom_prompt: str | None = None) -> dict | None:
     """High-level helper: reads image files from disk, calls Gemini, returns parsed result."""
     try:
         day_b64 = _read_image_as_b64(camera.day_view_path)
@@ -138,7 +128,9 @@ def analyze_with_fallback(camera) -> dict | None:
             logger.warning("Cámara %s no tiene imágenes para analizar.", camera.compound_code)
             return None
 
-        return analyze_camera_views(day_image_b64=day_b64, night_image_b64=night_b64)
+        return analyze_camera_views(
+            day_image_b64=day_b64, night_image_b64=night_b64, custom_prompt=custom_prompt
+        )
 
     except Exception as e:
         logger.error("Error analizando cámara %s: %s", camera.compound_code, str(e))
