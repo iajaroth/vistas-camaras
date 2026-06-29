@@ -8,6 +8,8 @@ import { Camera, CameraGroup, PaginatedResponse } from "@/lib/types";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import ExportButtons from "@/components/export/ExportButtons";
+import CameraCard from "@/components/cameras/CameraCard";
+import CameraDetailModal from "@/components/cameras/CameraDetailModal";
 
 export default function GroupDetailPage() {
   const params = useParams();
@@ -20,6 +22,8 @@ export default function GroupDetailPage() {
   const [newCameraName, setNewCameraName] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
+
+  const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -114,48 +118,30 @@ export default function GroupDetailPage() {
         <Button onClick={() => setShowAddModal(true)}>Agregar cámara</Button>
       </div>
 
-      {/* Camera list */}
+      {/* Camera grid */}
       {cameras.length === 0 ? (
         <p className="text-zinc-500 text-sm">No hay cámaras en este grupo.</p>
       ) : (
-        <div className="bg-[#111218] rounded-none border border-zinc-800 divide-y divide-zinc-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {cameras.map((camera) => (
-            <Link
+            <CameraCard
               key={camera.id}
-              href={`/groups/${groupId}/cameras/${camera.id}`}
-              className="flex items-center justify-between px-5 py-4 hover:bg-zinc-800/50 transition-colors cursor-pointer"
-            >
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-sm font-medium text-blue-400 bg-blue-600/10 px-2 py-0.5 tracking-wider">
-                  {camera.compound_code}
-                </span>
-                <span className="text-sm text-zinc-200">{camera.name}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span
-                  className={`inline-flex items-center gap-1 text-xs ${
-                    camera.day_view_path ? "text-emerald-400" : "text-zinc-600"
-                  }`}
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                  Día
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 text-xs ${
-                    camera.night_view_path ? "text-emerald-400" : "text-zinc-600"
-                  }`}
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                  Noche
-                </span>
-              </div>
-            </Link>
+              camera={camera}
+              onClick={(cam) => setSelectedCameraId(String(cam.id))}
+            />
           ))}
         </div>
+      )}
+
+      {/* Camera detail modal */}
+      {selectedCameraId && (
+        <CameraDetailModal
+          cameraId={selectedCameraId}
+          open={!!selectedCameraId}
+          onClose={() => setSelectedCameraId(null)}
+          onDeleted={fetchData}
+          onUpdated={fetchData}
+        />
       )}
 
       {/* Add camera modal */}
