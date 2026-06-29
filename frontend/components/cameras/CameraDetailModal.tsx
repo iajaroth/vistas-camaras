@@ -238,22 +238,31 @@ export default function CameraDetailModal({
                     VISTA
                   </h3>
                   {camera.day_thumbnail_path ? (
-                    <div
-                      className="cursor-pointer overflow-hidden border border-zinc-800 mb-3 relative group"
-                      onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
-                    >
-                      <img
-                        src={getImageUrl(camera.day_thumbnail_path)!}
-                        alt="Vista de cámara"
-                        className="w-full h-64 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                      />
+                    <div className="max-w-2xl mx-auto">
+                      <div
+                        className="cursor-pointer overflow-hidden border border-zinc-800 relative group"
+                        onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
+                      >
+                        <div className="aspect-square">
+                          <img
+                            src={getImageUrl(camera.day_thumbnail_path)!}
+                            alt="Vista de cámara"
+                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
+                      </div>
                     </div>
                   ) : (
-                    <div className="w-full h-64 bg-[#18181b] flex items-center justify-center mb-3">
-                      <span className="text-xs text-zinc-600">Sin imagen</span>
+                    <div className="aspect-square max-w-2xl mx-auto bg-[#18181b] flex items-center justify-center">
+                      <div className="text-center">
+                        <span className="text-xs text-zinc-600 block mb-3">Sin imagen</span>
+                        <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
+                      </div>
                     </div>
                   )}
-                  <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
                 </div>
 
                 {/* AI Analysis */}
