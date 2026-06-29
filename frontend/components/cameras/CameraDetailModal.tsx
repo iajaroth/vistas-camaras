@@ -237,15 +237,15 @@ export default function CameraDetailModal({
                     </svg>
                     VISTA
                   </h3>
-                  {camera.day_thumbnail_path ? (
-                    <div className="max-w-2xl mx-auto">
+                  {camera.day_view_path ? (
+                    <div className="max-w-md mx-auto">
                       <div
                         className="cursor-pointer overflow-hidden border border-zinc-800 relative group"
                         onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
                       >
                         <div className="aspect-square">
                           <img
-                            src={getImageUrl(camera.day_thumbnail_path)!}
+                            src={getImageUrl(camera.day_view_path)!}
                             alt="Vista de cámara"
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                           />
@@ -256,7 +256,7 @@ export default function CameraDetailModal({
                       </div>
                     </div>
                   ) : (
-                    <div className="aspect-square max-w-2xl mx-auto bg-[#18181b] flex items-center justify-center">
+                    <div className="aspect-square max-w-md mx-auto bg-[#18181b] flex items-center justify-center">
                       <div className="text-center">
                         <span className="text-xs text-zinc-600 block mb-3">Sin imagen</span>
                         <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
