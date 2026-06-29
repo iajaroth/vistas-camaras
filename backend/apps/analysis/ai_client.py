@@ -1,7 +1,8 @@
 """
-DeepSeek AI client for camera view analysis.
+Gemini Flash AI client for camera view analysis.
 
-Uses the OpenAI-compatible SDK pointing to DeepSeek's API endpoint.
+Uses Google's Generative AI SDK with a specialized security camera
+analysis prompt trained for professional CCTV audits.
 """
 
 import base64
@@ -9,103 +10,105 @@ import json
 import logging
 from pathlib import Path
 
+import google.generativeai as genai
 from django.conf import settings
-from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
-ANALYSIS_PROMPT = """Analiza las imágenes de esta cámara de seguridad.
+SYSTEM_PROMPT = """Eres un Ingeniero Senior en Seguridad Física, especialista en diseño de sistemas de videovigilancia (CCTV), analítica de video inteligente (VCA) y arquitectura de seguridad perimetral. Tienes más de 15 años de experiencia auditando instalaciones reales.
+
+TU ÚNICO OBJETIVO: Analizar la imagen de una vista de cámara de seguridad que te proporcione el usuario y entregar un informe técnico, brutalmente honesto, hiper-específico y libre de lugares comunes.
+
+ESTÁ ESTRICTAMENTE PROHIBIDO dar consejos genéricos (ejemplos prohibidos: "asegúrate de tener buena luz", "usa una cámara de alta resolución", "revisa los ángulos"). Todo lo que digas DEBE estar fundamentado en lo que es visible en la imagen.
+
+Analiza las imágenes siguiendo estas áreas:
+
+1. CONTEXTO Y DIAGNÓSTICO INMEDIATO
+- ¿Qué tipo de zona es? (Ej: parking, pasillo, acceso peatonal, perímetro abierto, caja de un negocio).
+- ¿Cuál es el propósito principal según lo que ves?
+- ¿Hay algún error crítico de instalación evidente? (Ej: cámara apuntando al suelo, domo tapado, reflejo del sol directo).
+
+2. PUNTOS A FAVOR (Fortalezas Técnicas)
+- Cobertura del suelo y profundidad de campo.
+- "Líneas de avance" o "cuellos de botella" bien cubiertos.
+- Orientación respecto a la fuente de luz.
+- Si la altura y ángulo permiten tareas específicas (identificación facial, lectura de matrículas).
+
+3. PUNTOS DE MEJORA (Debilidades y Riesgos)
+- PUNTOS CIEGOS exactos (ej: "esquina superior derecha detrás del contenedor").
+- "Factor de Identificación": ¿Puede esta cámara identificar a una persona o solo detectar un bulto? ¿Por qué?
+- Problemas de contraluz, reflejos, zonas de oscuridad total.
+- Vulnerabilidad ante sabotaje físico.
+
+4. ANALÍTICAS DE VIDEO RECOMENDADAS (VCA)
+QUÉ analítica, DÓNDE en la imagen se aplica (usa puntos de referencia visibles) y PARA QUÉ.
+Tipos posibles: Tripwire (cruce de línea), Loitering (merodeo), Objetos abandonados, LPR/ANPR (matrículas), Crowd Detection, Conteo de personas/vehículos.
+
+5. VEREDICTO
+Resume en 2 frases si la cámara cumple su misión. Da la ÚNICA acción correctiva prioritaria.
+
+Si hay dos imágenes (día y noche), compara diferencias de visibilidad entre ambas condiciones.
+
 Responde ÚNICAMENTE en JSON con esta estructura exacta:
 {
-  "pros": ["punto 1", "punto 2", ...],
-  "improvements": ["mejora 1", "mejora 2", ...],
-  "recommended_analytics": ["analítica 1", "analítica 2", ...],
-  "critical_notes": ["nota 1", "nota 2", ...]
+  "pros": ["fortaleza técnica 1", "fortaleza técnica 2", ...],
+  "improvements": ["debilidad/riesgo 1", "debilidad/riesgo 2", ...],
+  "recommended_analytics": ["analítica con ubicación y propósito 1", ...],
+  "critical_notes": ["veredicto y diagnóstico 1", "acción correctiva 1", ...]
 }
 
-Reglas:
-- En "pros": aspectos positivos de la ubicación y cobertura de la cámara.
-- En "improvements": puntos concretos de mejora basados en lo visible.
-- En "recommended_analytics": SOLO recomendar analíticas de video aplicables a lo que se VE en la imagen (ej: si hay estacionamiento, recomendar conteo vehicular; si hay zona peatonal, detección de merodeo).
-- En "critical_notes": brechas críticas de cobertura, obstrucciones, o puntos ciegos visibles.
-- NO incluir recomendaciones genéricas no relacionadas con el contenido de la imagen.
-- Si hay dos imágenes (día y noche), comparar diferencias de visibilidad entre ambas condiciones.
-"""
+Cada punto debe ser una oración completa, técnica y específica a lo que se ve en la imagen."""
+
+ANALYSIS_PROMPT = "Analiza esta(s) vista(s) de cámara de seguridad. Si hay dos imágenes, la primera es la vista DIURNA y la segunda es la vista NOCTURNA."
 
 
 def analyze_camera_views(
     day_image_b64: str | None = None, night_image_b64: str | None = None
 ) -> dict:
-    """
-    Send camera view image(s) to DeepSeek for analysis.
-
-    Args:
-        day_image_b64: Base64-encoded daytime image, or None.
-        night_image_b64: Base64-encoded nighttime image, or None.
-
-    Returns:
-        Parsed dict with keys: pros, improvements, recommended_analytics, critical_notes.
-
-    Raises:
-        ValueError: If no images provided or response cannot be parsed.
-        openai.APIError: On API communication failures.
-    """
+    """Send camera view image(s) to Gemini Flash for analysis."""
     if not day_image_b64 and not night_image_b64:
         raise ValueError("Se requiere al menos una imagen para el análisis.")
 
-    client = OpenAI(
-        api_key=settings.DEEPSEEK_API_KEY,
-        base_url=settings.DEEPSEEK_BASE_URL,
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel(
+        model_name=settings.GEMINI_MODEL,
+        system_instruction=SYSTEM_PROMPT,
     )
 
-    content: list[dict] = [{"type": "text", "text": ANALYSIS_PROMPT}]
+    content = [ANALYSIS_PROMPT]
 
     if day_image_b64:
-        content.append(
-            {
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{day_image_b64}"},
+        content.append({
+            "inline_data": {
+                "mime_type": "image/jpeg",
+                "data": day_image_b64,
             }
-        )
+        })
     if night_image_b64:
-        content.append(
-            {
-                "type": "image_url",
-                "image_url": {"url": f"data:image/jpeg;base64,{night_image_b64}"},
+        content.append({
+            "inline_data": {
+                "mime_type": "image/jpeg",
+                "data": night_image_b64,
             }
-        )
+        })
 
-    response = client.chat.completions.create(
-        model=settings.DEEPSEEK_MODEL,
-        messages=[{"role": "user", "content": content}],
-        timeout=55,
+    response = model.generate_content(
+        content,
+        generation_config=genai.GenerationConfig(
+            response_mime_type="application/json",
+            temperature=0.3,
+        ),
+        request_options={"timeout": 120},
     )
 
-    raw_text = response.choices[0].message.content
-    return parse_analysis_response(raw_text)
+    return parse_analysis_response(response.text)
 
 
 def parse_analysis_response(raw_text: str) -> dict:
-    """
-    Extract JSON from DeepSeek response text.
-
-    Handles markdown code blocks (```json ... ```) wrapping.
-    Validates the 4 required sections are present and are lists.
-
-    Args:
-        raw_text: Raw text content from the AI response.
-
-    Returns:
-        Dict with keys: pros, improvements, recommended_analytics, critical_notes.
-
-    Raises:
-        ValueError: If JSON cannot be parsed or required sections are missing/invalid.
-    """
+    """Extract and validate JSON from Gemini response."""
     text = raw_text.strip()
 
-    # Strip markdown code blocks if present
     if text.startswith("```"):
-        # Remove first line (```json or ```) and trailing ```
         text = text.split("\n", 1)[1].rsplit("```", 1)[0]
 
     try:
@@ -126,15 +129,7 @@ def parse_analysis_response(raw_text: str) -> dict:
 
 
 def analyze_with_fallback(camera) -> dict | None:
-    """
-    High-level helper: reads image files from disk, calls DeepSeek, returns parsed result.
-
-    Args:
-        camera: Camera model instance.
-
-    Returns:
-        Parsed analysis dict, or None if any error occurs.
-    """
+    """High-level helper: reads image files from disk, calls Gemini, returns parsed result."""
     try:
         day_b64 = _read_image_as_b64(camera.day_view_path)
         night_b64 = _read_image_as_b64(camera.night_view_path)
@@ -146,9 +141,7 @@ def analyze_with_fallback(camera) -> dict | None:
         return analyze_camera_views(day_image_b64=day_b64, night_image_b64=night_b64)
 
     except Exception as e:
-        logger.error(
-            "Error analizando cámara %s: %s", camera.compound_code, str(e)
-        )
+        logger.error("Error analizando cámara %s: %s", camera.compound_code, str(e))
         return None
 
 
