@@ -31,3 +31,6 @@ Thumbs.db
 deploy-coolify.ps1
 create-db.ps1
 set-envs.ps1
+
+# Context doc for AI handoff - contains sensitive info, not for repo
+CONTEXT.md
