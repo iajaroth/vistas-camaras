@@ -229,61 +229,31 @@ export default function CameraDetailModal({
                   <p className="text-zinc-400 text-sm">{camera.description}</p>
                 )}
 
-                {/* Images section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Day view */}
-                  <div className="border border-zinc-800 p-4">
-                    <h3 className="text-[11px] text-zinc-500 tracking-wider font-medium mb-3 flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                      VISTA DIURNA
-                    </h3>
-                    {camera.day_thumbnail_path ? (
-                      <div
-                        className="cursor-pointer overflow-hidden border border-zinc-800 mb-3 relative group"
-                        onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
-                      >
-                        <img
-                          src={getImageUrl(camera.day_thumbnail_path)!}
-                          alt="Vista diurna"
-                          className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-full h-48 bg-[#18181b] flex items-center justify-center mb-3">
-                        <span className="text-xs text-zinc-600">Sin imagen</span>
-                      </div>
-                    )}
-                    <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
-                  </div>
-
-                  {/* Night view */}
-                  <div className="border border-zinc-800 p-4">
-                    <h3 className="text-[11px] text-zinc-500 tracking-wider font-medium mb-3 flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                      VISTA NOCTURNA
-                    </h3>
-                    {camera.night_thumbnail_path ? (
-                      <div
-                        className="cursor-pointer overflow-hidden border border-zinc-800 mb-3 relative group"
-                        onClick={() => setOverlayImage(getImageUrl(camera.night_view_path)!)}
-                      >
-                        <img
-                          src={getImageUrl(camera.night_thumbnail_path)!}
-                          alt="Vista nocturna"
-                          className="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-full h-48 bg-[#18181b] flex items-center justify-center mb-3">
-                        <span className="text-xs text-zinc-600">Sin imagen</span>
-                      </div>
-                    )}
-                    <ImageUploader cameraId={cameraId} viewType="night" onUploadComplete={handleUploadComplete} />
-                  </div>
+                {/* Image section */}
+                <div className="border border-zinc-800 p-4">
+                  <h3 className="text-[11px] text-zinc-500 tracking-wider font-medium mb-3 flex items-center gap-2">
+                    <svg className="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    VISTA
+                  </h3>
+                  {camera.day_thumbnail_path ? (
+                    <div
+                      className="cursor-pointer overflow-hidden border border-zinc-800 mb-3 relative group"
+                      onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
+                    >
+                      <img
+                        src={getImageUrl(camera.day_thumbnail_path)!}
+                        alt="Vista de cámara"
+                        className="w-full h-64 object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-64 bg-[#18181b] flex items-center justify-center mb-3">
+                      <span className="text-xs text-zinc-600">Sin imagen</span>
+                    </div>
+                  )}
+                  <ImageUploader cameraId={cameraId} viewType="day" onUploadComplete={handleUploadComplete} />
                 </div>
 
                 {/* AI Analysis */}

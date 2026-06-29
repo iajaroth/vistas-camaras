@@ -16,8 +16,7 @@ export default function CameraCard({ camera, onClick }: CameraCardProps) {
       ? `${API_BASE}/media/${camera.night_thumbnail_path}`
       : null;
 
-  const hasDayView = !!camera.day_view_path;
-  const hasNightView = !!camera.night_view_path;
+  const hasImage = !!camera.day_view_path;
 
   return (
     <div
@@ -49,21 +48,12 @@ export default function CameraCard({ camera, onClick }: CameraCardProps) {
           </span>
         </div>
 
-        {/* Status indicators */}
-        <div className="absolute bottom-2 right-2 flex gap-1.5">
-          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 ${
-            hasDayView ? "bg-amber-950/80 text-amber-400 border border-amber-800/60" : "bg-zinc-900/80 text-zinc-600 border border-zinc-800/60"
+        {/* Status indicator */}
+        <div className="absolute bottom-2 right-2">
+          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 tracking-wider ${
+            hasImage ? "bg-emerald-950/80 text-emerald-400 border border-emerald-800/60" : "bg-zinc-900/80 text-zinc-600 border border-zinc-800/60"
           }`}>
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-          </span>
-          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 ${
-            hasNightView ? "bg-blue-950/80 text-blue-400 border border-blue-800/60" : "bg-zinc-900/80 text-zinc-600 border border-zinc-800/60"
-          }`}>
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
+            {hasImage ? "ACTIVA" : "SIN VISTA"}
           </span>
         </div>
       </div>
@@ -76,9 +66,9 @@ export default function CameraCard({ camera, onClick }: CameraCardProps) {
         )}
         <div className="mt-3 pt-3 border-t border-zinc-900 flex items-center justify-between">
           <span className={`text-[10px] tracking-wider font-medium ${
-            hasDayView || hasNightView ? "text-emerald-400" : "text-zinc-600"
+            hasImage ? "text-emerald-400" : "text-zinc-600"
           }`}>
-            {hasDayView && hasNightView ? "DIA + NOCHE" : hasDayView ? "SOLO DIA" : hasNightView ? "SOLO NOCHE" : "SIN VISTAS"}
+            {hasImage ? "VISTA DISPONIBLE" : "PENDIENTE"}
           </span>
           <span className="text-[10px] text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity tracking-wider">
             DETALLES
