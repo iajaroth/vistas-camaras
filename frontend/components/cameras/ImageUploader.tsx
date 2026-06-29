@@ -40,7 +40,7 @@ export default function ImageUploader({ cameraId, viewType, onUploadComplete }: 
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("image", file);
       await apiClient.post(`/api/cameras/${cameraId}/upload/?type=${viewType}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
