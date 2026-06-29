@@ -56,7 +56,7 @@ export default function CombinedViewPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-gray-500">Cargando...</p>
+        <p className="text-zinc-500">Cargando...</p>
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function CombinedViewPage() {
   if (error || !data) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-red-600">{error || "Datos no disponibles."}</p>
+        <p className="text-red-400">{error || "Datos no disponibles."}</p>
       </div>
     );
   }
@@ -73,21 +73,21 @@ export default function CombinedViewPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Link
         href={`/groups/${groupId}`}
-        className="text-sm text-blue-600 hover:text-blue-800 mb-4 inline-block"
+        className="text-sm text-blue-400 hover:text-blue-300 mb-4 inline-block"
       >
         ← Volver al grupo
       </Link>
 
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <span className="inline-block bg-blue-50 text-blue-700 text-sm font-mono font-medium px-2 py-1 rounded">
+          <span className="inline-block bg-blue-600/10 text-blue-400 text-sm font-mono font-medium px-2 py-1 tracking-wider">
             {data.group_code}
           </span>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-zinc-100">
             Vista Combinada — {data.group_name}
           </h1>
         </div>
-        <p className="text-sm text-gray-500">{data.cameras.length} cámaras</p>
+        <p className="text-sm text-zinc-500">{data.cameras.length} cámaras</p>
       </div>
 
       <CombinedView groupId={groupId} cameras={data.cameras} />

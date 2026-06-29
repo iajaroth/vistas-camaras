@@ -27,10 +27,10 @@ export default function CombinedView({ groupId, cameras }: CombinedViewProps) {
       <div className="flex items-center gap-2 mb-6">
         <button
           onClick={() => setViewType("day")}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none text-sm font-medium transition-colors cursor-pointer ${
             viewType === "day"
-              ? "bg-yellow-100 text-yellow-800 border border-yellow-300"
-              : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
+              ? "bg-amber-950 text-amber-400 border border-amber-800"
+              : "bg-[#18181b] text-zinc-400 border border-zinc-800 hover:border-zinc-600"
           }`}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,10 +40,10 @@ export default function CombinedView({ groupId, cameras }: CombinedViewProps) {
         </button>
         <button
           onClick={() => setViewType("night")}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none text-sm font-medium transition-colors cursor-pointer ${
             viewType === "night"
-              ? "bg-indigo-100 text-indigo-800 border border-indigo-300"
-              : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
+              ? "bg-blue-950 text-blue-400 border border-blue-800"
+              : "bg-[#18181b] text-zinc-400 border border-zinc-800 hover:border-zinc-600"
           }`}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -55,7 +55,7 @@ export default function CombinedView({ groupId, cameras }: CombinedViewProps) {
 
       {/* Grid */}
       {cameras.length === 0 ? (
-        <p className="text-sm text-gray-500">No hay cámaras en este grupo.</p>
+        <p className="text-sm text-zinc-500">No hay cámaras en este grupo.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {cameras.map((camera) => {
@@ -66,7 +66,7 @@ export default function CombinedView({ groupId, cameras }: CombinedViewProps) {
               <Link
                 key={camera.id}
                 href={`/groups/${groupId}/cameras/${camera.id}`}
-                className="group relative rounded-lg overflow-hidden border border-gray-200 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer"
+                className="group relative rounded-none overflow-hidden border border-zinc-800 hover:border-blue-600 transition-colors cursor-pointer"
               >
                 {thumbUrl ? (
                   <img
@@ -75,8 +75,8 @@ export default function CombinedView({ groupId, cameras }: CombinedViewProps) {
                     className="w-full h-40 object-cover"
                   />
                 ) : (
-                  <div className="w-full h-40 bg-gray-100 flex items-center justify-center">
-                    <span className="text-xs text-gray-400">
+                  <div className="w-full h-40 bg-[#18181b] flex items-center justify-center">
+                    <span className="text-xs text-zinc-600">
                       Sin imagen {viewType === "day" ? "diurna" : "nocturna"}
                     </span>
                   </div>

@@ -88,17 +88,17 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
 
   return (
     <div>
-      {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
+      {error && <p className="text-xs text-red-400 mb-3">{error}</p>}
 
       {/* Note list */}
       {notes.length === 0 ? (
-        <p className="text-sm text-gray-500 mb-4">No hay notas críticas.</p>
+        <p className="text-sm text-zinc-500 mb-4">No hay notas críticas.</p>
       ) : (
         <div className="space-y-3 mb-4">
           {notes.map((note) => (
             <div
               key={note.id}
-              className="border border-gray-200 rounded-md p-3"
+              className="border border-zinc-800 rounded-none p-3"
             >
               {editingId === note.id ? (
                 <div className="space-y-2">
@@ -107,10 +107,10 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
                     onChange={(e) => setEditContent(e.target.value)}
                     rows={3}
                     maxLength={2000}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-zinc-800 rounded-none bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-zinc-600">
                       {editContent.length}/2000
                     </span>
                     <div className="flex gap-2">
@@ -133,11 +133,11 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
                 </div>
               ) : (
                 <>
-                  <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                  <p className="text-sm text-zinc-200 whitespace-pre-wrap">
                     {note.content}
                   </p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-zinc-600">
                       {new Date(note.created_at).toLocaleDateString("es-ES", {
                         day: "numeric",
                         month: "short",
@@ -150,13 +150,13 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
                     <div className="flex gap-2">
                       <button
                         onClick={() => startEdit(note)}
-                        className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer"
+                        className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => setDeleteTarget(note)}
-                        className="text-xs text-red-600 hover:text-red-800 cursor-pointer"
+                        className="text-xs text-red-400 hover:text-red-300 cursor-pointer"
                       >
                         Eliminar
                       </button>
@@ -170,8 +170,8 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
       )}
 
       {/* Add note form */}
-      <div className="border-t border-gray-200 pt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="border-t border-zinc-800 pt-4">
+        <label className="block text-sm font-medium text-zinc-300 mb-1">
           Agregar nota
         </label>
         <textarea
@@ -180,10 +180,10 @@ export default function CriticalNotes({ cameraId, notes, onNotesChange }: Critic
           rows={3}
           maxLength={2000}
           placeholder="Escribe una nota crítica..."
-          className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+          className="w-full border border-zinc-800 rounded-none bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
         />
         <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-400">{newContent.length}/2000</span>
+          <span className="text-xs text-zinc-600">{newContent.length}/2000</span>
           <Button onClick={handleAdd} loading={adding} disabled={!newContent.trim()}>
             Agregar nota
           </Button>

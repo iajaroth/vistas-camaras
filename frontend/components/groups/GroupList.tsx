@@ -59,7 +59,7 @@ export default function GroupList() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Grupos de Cámaras</h2>
+        <h2 className="text-xl font-semibold text-zinc-100">Grupos de Cámaras</h2>
         <Button onClick={() => setShowForm(true)}>Nuevo Grupo</Button>
       </div>
 
@@ -71,7 +71,7 @@ export default function GroupList() {
           </svg>
         </div>
       ) : groups.length === 0 ? (
-        <p className="text-sm text-gray-500 text-center py-12">
+        <p className="text-sm text-zinc-500 text-center py-12">
           No hay grupos creados. Crea tu primer grupo para comenzar.
         </p>
       ) : (
@@ -91,7 +91,7 @@ export default function GroupList() {
               >
                 Anterior
               </Button>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-zinc-500">
                 Página {page} de {totalPages}
               </span>
               <Button
@@ -108,9 +108,9 @@ export default function GroupList() {
 
       {/* Create modal */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Nuevo Grupo</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm">
+          <div className="bg-[#111218] border border-zinc-800 rounded-none shadow-xl w-full max-w-md mx-4 p-6">
+            <h2 className="text-lg font-semibold text-zinc-100 mb-4">Nuevo Grupo</h2>
             <GroupForm onSuccess={handleCreated} onCancel={() => setShowForm(false)} />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function GroupList() {
           ¿Estás seguro de eliminar el grupo{" "}
           <strong>{deleteTarget?.code}</strong>?
         </p>
-        <p className="mt-2 text-red-600 font-medium">
+        <p className="mt-2 text-red-400 font-medium">
           Se eliminarán todas las cámaras, imágenes, reportes y notas asociadas.
           Esta acción no se puede deshacer.
         </p>

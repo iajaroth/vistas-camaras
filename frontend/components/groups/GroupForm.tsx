@@ -74,7 +74,7 @@ export default function GroupForm({ group, onSuccess, onCancel }: GroupFormProps
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Code field */}
       <div>
-        <label htmlFor="group-code" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="group-code" className="block text-sm font-medium text-zinc-300 mb-1">
           Código
         </label>
         <input
@@ -84,14 +84,14 @@ export default function GroupForm({ group, onSuccess, onCancel }: GroupFormProps
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           disabled={isEdit}
           placeholder="AB01"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:text-gray-500"
+          className="w-full rounded-none border border-zinc-800 bg-[#18181b] px-3 py-2 text-sm font-mono text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-zinc-900 disabled:text-zinc-600"
         />
         {errors.code && <p className="text-xs text-red-600 mt-1">{errors.code}</p>}
       </div>
 
       {/* Name field */}
       <div>
-        <label htmlFor="group-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="group-name" className="block text-sm font-medium text-zinc-300 mb-1">
           Nombre
         </label>
         <input
@@ -101,14 +101,14 @@ export default function GroupForm({ group, onSuccess, onCancel }: GroupFormProps
           onChange={(e) => setName(e.target.value)}
           maxLength={100}
           placeholder="Nombre del grupo"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full rounded-none border border-zinc-800 bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
       </div>
 
       {/* Description field */}
       <div>
-        <label htmlFor="group-desc" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="group-desc" className="block text-sm font-medium text-zinc-300 mb-1">
           Descripción
         </label>
         <textarea
@@ -118,9 +118,9 @@ export default function GroupForm({ group, onSuccess, onCancel }: GroupFormProps
           maxLength={500}
           rows={3}
           placeholder="Descripción opcional"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full rounded-none border border-zinc-800 bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
-        <p className="text-xs text-gray-400 mt-1">{description.length}/500</p>
+        <p className="text-xs text-zinc-600 mt-1">{description.length}/500</p>
         {errors.description && <p className="text-xs text-red-600 mt-1">{errors.description}</p>}
       </div>
 

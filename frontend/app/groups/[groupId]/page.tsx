@@ -61,7 +61,7 @@ export default function GroupDetailPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-gray-500">Cargando...</p>
+        <p className="text-zinc-500">Cargando...</p>
       </div>
     );
   }
@@ -69,7 +69,7 @@ export default function GroupDetailPage() {
   if (!group) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-red-600">Grupo no encontrado.</p>
+        <p className="text-red-400">Grupo no encontrado.</p>
       </div>
     );
   }
@@ -78,19 +78,19 @@ export default function GroupDetailPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-6">
-        <Link href="/groups" className="text-sm text-blue-600 hover:text-blue-800 mb-2 inline-block">
+        <Link href="/groups" className="text-sm text-blue-400 hover:text-blue-300 mb-2 inline-block">
           ← Volver a grupos
         </Link>
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <span className="inline-block bg-blue-50 text-blue-700 text-sm font-mono font-medium px-2 py-1 rounded">
+              <span className="inline-block bg-blue-600/10 text-blue-400 text-sm font-mono font-medium px-2 py-1 tracking-wider">
                 {group.code}
               </span>
-              <h1 className="text-2xl font-bold text-gray-900">{group.name}</h1>
+              <h1 className="text-2xl font-bold text-zinc-100">{group.name}</h1>
             </div>
             {group.description && (
-              <p className="text-gray-600 mt-1">{group.description}</p>
+              <p className="text-zinc-400 mt-1">{group.description}</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -103,12 +103,12 @@ export default function GroupDetailPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">{error}</div>
+        <div className="mb-4 p-3 bg-red-950 text-red-400 border border-red-800 rounded-none text-sm">{error}</div>
       )}
 
       {/* Actions */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-zinc-100">
           Cámaras ({cameras.length})
         </h2>
         <Button onClick={() => setShowAddModal(true)}>Agregar cámara</Button>
@@ -116,25 +116,25 @@ export default function GroupDetailPage() {
 
       {/* Camera list */}
       {cameras.length === 0 ? (
-        <p className="text-gray-500 text-sm">No hay cámaras en este grupo.</p>
+        <p className="text-zinc-500 text-sm">No hay cámaras en este grupo.</p>
       ) : (
-        <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+        <div className="bg-[#111218] rounded-none border border-zinc-800 divide-y divide-zinc-800">
           {cameras.map((camera) => (
             <Link
               key={camera.id}
               href={`/groups/${groupId}/cameras/${camera.id}`}
-              className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer"
+              className="flex items-center justify-between px-5 py-4 hover:bg-zinc-800/50 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <span className="font-mono text-sm font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                <span className="font-mono text-sm font-medium text-blue-400 bg-blue-600/10 px-2 py-0.5 tracking-wider">
                   {camera.compound_code}
                 </span>
-                <span className="text-sm text-gray-900">{camera.name}</span>
+                <span className="text-sm text-zinc-200">{camera.name}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span
                   className={`inline-flex items-center gap-1 text-xs ${
-                    camera.day_view_path ? "text-green-600" : "text-gray-400"
+                    camera.day_view_path ? "text-emerald-400" : "text-zinc-600"
                   }`}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,7 +144,7 @@ export default function GroupDetailPage() {
                 </span>
                 <span
                   className={`inline-flex items-center gap-1 text-xs ${
-                    camera.night_view_path ? "text-green-600" : "text-gray-400"
+                    camera.night_view_path ? "text-emerald-400" : "text-zinc-600"
                   }`}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -168,7 +168,7 @@ export default function GroupDetailPage() {
         loading={creating}
       >
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-zinc-300 mb-1">
             Nombre de la cámara
           </label>
           <input
@@ -176,7 +176,7 @@ export default function GroupDetailPage() {
             value={newCameraName}
             onChange={(e) => setNewCameraName(e.target.value)}
             placeholder="Ej: Entrada principal"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-zinc-800 rounded-none bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onKeyDown={(e) => e.key === "Enter" && handleCreateCamera()}
           />
         </div>

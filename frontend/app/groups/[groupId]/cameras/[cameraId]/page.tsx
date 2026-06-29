@@ -107,7 +107,7 @@ export default function CameraDetailPage() {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-gray-500">Cargando...</p>
+        <p className="text-zinc-500">Cargando...</p>
       </div>
     );
   }
@@ -115,7 +115,7 @@ export default function CameraDetailPage() {
   if (!camera) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-red-600">Cámara no encontrada.</p>
+        <p className="text-red-400">Cámara no encontrada.</p>
       </div>
     );
   }
@@ -125,17 +125,17 @@ export default function CameraDetailPage() {
       {/* Breadcrumb */}
       <Link
         href={`/groups/${groupId}`}
-        className="text-sm text-blue-600 hover:text-blue-800 mb-4 inline-block"
+        className="text-sm text-blue-400 hover:text-blue-300 mb-4 inline-block"
       >
         ← Volver al grupo
       </Link>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">{error}</div>
+        <div className="mb-4 p-3 bg-red-950 text-red-400 border border-red-800 rounded-none text-sm">{error}</div>
       )}
 
       {/* Camera header */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+      <div className="bg-[#111218] rounded-none border border-zinc-800 p-6 mb-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             {editing ? (
@@ -144,13 +144,13 @@ export default function CameraDetailPage() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-zinc-800 rounded-none bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <textarea
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                   rows={3}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-zinc-800 rounded-none bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Descripción (opcional)"
                 />
                 <div className="flex gap-2">
@@ -165,13 +165,13 @@ export default function CameraDetailPage() {
             ) : (
               <>
                 <div className="flex items-center gap-3 mb-1">
-                  <span className="font-mono text-sm font-medium text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                  <span className="font-mono text-sm font-medium text-blue-400 bg-blue-600/10 px-2 py-1 tracking-wider">
                     {camera.compound_code}
                   </span>
-                  <h1 className="text-2xl font-bold text-gray-900">{camera.name}</h1>
+                  <h1 className="text-2xl font-bold text-zinc-100">{camera.name}</h1>
                 </div>
                 {camera.description && (
-                  <p className="text-gray-600 mt-1">{camera.description}</p>
+                  <p className="text-zinc-400 mt-1">{camera.description}</p>
                 )}
               </>
             )}
@@ -193,8 +193,8 @@ export default function CameraDetailPage() {
       {/* Images section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Day view */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <div className="bg-[#111218] rounded-none border border-zinc-800 p-5">
+          <h3 className="text-sm font-semibold text-zinc-200 mb-3 flex items-center gap-2">
             <svg className="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
@@ -202,18 +202,18 @@ export default function CameraDetailPage() {
           </h3>
           {camera.day_thumbnail_path ? (
             <div
-              className="cursor-pointer rounded overflow-hidden mb-3"
+              className="cursor-pointer rounded-none overflow-hidden border border-zinc-800 mb-3"
               onClick={() => setOverlayImage(getImageUrl(camera.day_view_path)!)}
             >
               <img
                 src={getImageUrl(camera.day_thumbnail_path)!}
                 alt="Vista diurna"
-                className="w-full h-48 object-cover rounded"
+                className="w-full h-48 object-cover"
               />
             </div>
           ) : (
-            <div className="w-full h-48 bg-gray-100 rounded flex items-center justify-center mb-3">
-              <span className="text-sm text-gray-400">Sin imagen</span>
+            <div className="w-full h-48 bg-[#18181b] rounded-none flex items-center justify-center mb-3">
+              <span className="text-sm text-zinc-600">Sin imagen</span>
             </div>
           )}
           <ImageUploader
@@ -224,8 +224,8 @@ export default function CameraDetailPage() {
         </div>
 
         {/* Night view */}
-        <div className="bg-white rounded-lg border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+        <div className="bg-[#111218] rounded-none border border-zinc-800 p-5">
+          <h3 className="text-sm font-semibold text-zinc-200 mb-3 flex items-center gap-2">
             <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
@@ -233,18 +233,18 @@ export default function CameraDetailPage() {
           </h3>
           {camera.night_thumbnail_path ? (
             <div
-              className="cursor-pointer rounded overflow-hidden mb-3"
+              className="cursor-pointer rounded-none overflow-hidden border border-zinc-800 mb-3"
               onClick={() => setOverlayImage(getImageUrl(camera.night_view_path)!)}
             >
               <img
                 src={getImageUrl(camera.night_thumbnail_path)!}
                 alt="Vista nocturna"
-                className="w-full h-48 object-cover rounded"
+                className="w-full h-48 object-cover"
               />
             </div>
           ) : (
-            <div className="w-full h-48 bg-gray-100 rounded flex items-center justify-center mb-3">
-              <span className="text-sm text-gray-400">Sin imagen</span>
+            <div className="w-full h-48 bg-[#18181b] rounded-none flex items-center justify-center mb-3">
+              <span className="text-sm text-zinc-600">Sin imagen</span>
             </div>
           )}
           <ImageUploader
@@ -256,23 +256,23 @@ export default function CameraDetailPage() {
       </div>
 
       {/* AI Analysis */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+      <div className="bg-[#111218] rounded-none border border-zinc-800 p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Análisis IA</h2>
+          <h2 className="text-lg font-semibold text-zinc-100">Análisis IA</h2>
           <AnalysisTrigger cameraId={cameraId} onAnalysisComplete={fetchCamera} />
         </div>
         {report ? (
           <AnalysisReportView report={report} />
         ) : (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-zinc-500">
             No hay reporte de análisis. Sube al menos una imagen y solicita el análisis.
           </p>
         )}
       </div>
 
       {/* Critical Notes */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Notas Críticas</h2>
+      <div className="bg-[#111218] rounded-none border border-zinc-800 p-6">
+        <h2 className="text-lg font-semibold text-zinc-100 mb-4">Notas Críticas</h2>
         <CriticalNotes cameraId={cameraId} notes={notes} onNotesChange={fetchCamera} />
       </div>
 

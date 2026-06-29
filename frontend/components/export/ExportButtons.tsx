@@ -74,7 +74,7 @@ export default function ExportButtons({ exportUrl }: ExportButtonsProps) {
         </svg>
         Excel
       </Button>
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      {error && <span className="text-xs text-red-400">{error}</span>}
     </div>
   );
 }

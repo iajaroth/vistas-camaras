@@ -12,17 +12,17 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-40 bg-[#0F1115] border-b border-zinc-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <h1
-          className="text-lg font-semibold text-gray-900 cursor-pointer"
+          className="text-lg font-semibold text-zinc-100 cursor-pointer"
           onClick={() => router.push("/groups")}
         >
           Camera Views Registry
         </h1>
         <button
           onClick={handleLogout}
-          className="text-sm text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+          className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
         >
           Cerrar sesión
         </button>

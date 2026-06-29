@@ -78,13 +78,13 @@ export default function ImageUploader({ cameraId, viewType, onUploadComplete }: 
         }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-md p-4 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-none p-4 text-center transition-colors ${
           dragOver
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 hover:border-gray-400"
+            ? "border-blue-500 bg-blue-600/10"
+            : "border-zinc-700 hover:border-zinc-500"
         }`}
       >
-        <p className="text-xs text-gray-500 mb-2">
+        <p className="text-xs text-zinc-500 mb-2">
           Arrastra una imagen aquí o
         </p>
         <Button
@@ -102,9 +102,9 @@ export default function ImageUploader({ cameraId, viewType, onUploadComplete }: 
           onChange={handleFileChange}
           className="hidden"
         />
-        <p className="text-xs text-gray-400 mt-2">JPEG, PNG o WebP · máx. 10 MB</p>
+        <p className="text-xs text-zinc-600 mt-2">JPEG, PNG o WebP · máx. 10 MB</p>
       </div>
-      {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
+      {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
     </div>
   );
 }

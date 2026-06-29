@@ -35,18 +35,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0A0B0D] px-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+        <h1 className="text-2xl font-semibold text-zinc-100 text-center mb-8">
           Camera Views Registry
         </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4"
+          className="bg-[#111218] rounded-none border border-zinc-800 p-6 space-y-4"
         >
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-1">
               Usuario
             </label>
             <input
@@ -55,13 +55,13 @@ export default function LoginPage() {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-none border border-zinc-800 bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="usuario"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-1">
               Contraseña
             </label>
             <input
@@ -70,13 +70,13 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-none border border-zinc-800 bg-[#18181b] px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600" role="alert">
+            <p className="text-sm text-red-400" role="alert">
               {error}
             </p>
           )}

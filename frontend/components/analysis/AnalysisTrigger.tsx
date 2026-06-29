@@ -33,7 +33,7 @@ export default function AnalysisTrigger({ cameraId, onAnalysisComplete }: Analys
 
   return (
     <div className="flex items-center gap-3">
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      {error && <span className="text-xs text-red-400">{error}</span>}
       <Button onClick={handleAnalyze} loading={loading}>
         {loading ? "Analizando..." : "Solicitar análisis IA"}
       </Button>

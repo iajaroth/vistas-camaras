@@ -37,15 +37,15 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6"
+        className="bg-[#111218] border border-zinc-800 rounded-none shadow-xl w-full max-w-md mx-4 p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>
-        <div className="text-sm text-gray-600 mb-6">{children}</div>
+        <h2 className="text-lg font-semibold text-zinc-100 mb-4">{title}</h2>
+        <div className="text-sm text-zinc-400 mb-6">{children}</div>
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose} disabled={loading}>
             Cancelar
