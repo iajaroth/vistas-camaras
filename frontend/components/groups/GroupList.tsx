@@ -2,14 +2,19 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { apiClient } from "@/lib/api";
-import { CameraGroup, PaginatedResponse } from "@/lib/types";
+import { Camera, CameraGroup, PaginatedResponse } from "@/lib/types";
 import GroupCard from "./GroupCard";
 import GroupForm from "./GroupForm";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 
+interface GroupThumbnails {
+  [groupId: number]: { compound_code: string; thumbnail_path: string | null }[];
+}
+
 export default function GroupList() {
   const [groups, setGroups] = useState<CameraGroup[]>([]);
+  const [thumbnails, setThumbnails] = useState<GroupThumbnails>({});
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -26,8 +31,26 @@ export default function GroupList() {
       setGroups(res.data.results);
       setTotalPages(res.data.total_pages);
       setPage(res.data.page);
+
+      const thumbMap: GroupThumbnails = {};
+      await Promise.all(
+        res.data.results.map(async (group) => {
+          try {
+            const camRes = await apiClient.get<PaginatedResponse<Camera>>(
+              `/api/groups/${group.id}/cameras/`
+            );
+            thumbMap[group.id] = camRes.data.results.map((cam) => ({
+              compound_code: cam.compound_code,
+              thumbnail_path: cam.day_thumbnail_path || cam.night_thumbnail_path || null,
+            }));
+          } catch {
+            thumbMap[group.id] = [];
+          }
+        })
+      );
+      setThumbnails(thumbMap);
     } catch {
-      // ponytail: silent fail, list stays empty
+      // silent fail
     } finally {
       setLoading(false);
     }
@@ -50,7 +73,7 @@ export default function GroupList() {
       setDeleteTarget(null);
       fetchGroups(page);
     } catch {
-      // ponytail: silent fail on delete
+      // silent fail
     } finally {
       setDeleting(false);
     }
@@ -78,7 +101,12 @@ export default function GroupList() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {groups.map((g) => (
-              <GroupCard key={g.id} group={g} onDelete={setDeleteTarget} />
+              <GroupCard
+                key={g.id}
+                group={g}
+                thumbnails={thumbnails[g.id] ?? []}
+                onDelete={setDeleteTarget}
+              />
             ))}
           </div>
 
