@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { apiClient } from "@/lib/api";
 import { Camera, CameraGroup, PaginatedResponse } from "@/lib/types";
 import GroupCard from "./GroupCard";
 import GroupForm from "./GroupForm";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
+
+const PAGE_SIZE = 9;
 
 interface GroupThumbnails {
   [groupId: number]: { compound_code: string; thumbnail_path: string | null; updated_at: string }[];
@@ -21,12 +23,15 @@ export default function GroupList() {
   const [showForm, setShowForm] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CameraGroup | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [search, setSearch] = useState("");
 
-  const fetchGroups = useCallback(async (p: number) => {
+  const isFirstRender = useRef(true);
+
+  const fetchGroups = useCallback(async (p: number, searchTerm: string) => {
     setLoading(true);
     try {
       const res = await apiClient.get<PaginatedResponse<CameraGroup>>("/api/groups/", {
-        params: { page: p },
+        params: { page: p, page_size: PAGE_SIZE, search: searchTerm || undefined },
       });
       setGroups(res.data.results);
       setTotalPages(res.data.total_pages);
@@ -58,12 +63,21 @@ export default function GroupList() {
   }, []);
 
   useEffect(() => {
-    fetchGroups(1);
-  }, [fetchGroups]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      fetchGroups(1, "");
+      return;
+    }
+    const timer = setTimeout(() => {
+      fetchGroups(1, search);
+    }, 350);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   const handleCreated = () => {
     setShowForm(false);
-    fetchGroups(page);
+    fetchGroups(page, search);
   };
 
   const handleDelete = async () => {
@@ -72,7 +86,7 @@ export default function GroupList() {
     try {
       await apiClient.delete(`/api/groups/${deleteTarget.id}/`);
       setDeleteTarget(null);
-      fetchGroups(page);
+      fetchGroups(page, search);
     } catch {
       // silent fail
     } finally {
@@ -82,9 +96,23 @@ export default function GroupList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-zinc-100">Grupos de Cámaras</h2>
-        <Button onClick={() => setShowForm(true)}>Nuevo Grupo</Button>
+      <div className="flex items-center justify-between mb-6 gap-4">
+        <h2 className="text-xl font-semibold text-zinc-100 whitespace-nowrap">Grupos de Cámaras</h2>
+        <div className="flex items-center gap-3 flex-1 justify-end">
+          <div className="relative w-full max-w-xs">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar grupo por nombre o código..."
+              className="w-full border border-zinc-800 rounded-none bg-[#18181b] pl-9 pr-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <Button onClick={() => setShowForm(true)} className="whitespace-nowrap">Nuevo Grupo</Button>
+        </div>
       </div>
 
       {loading ? (
@@ -96,7 +124,7 @@ export default function GroupList() {
         </div>
       ) : groups.length === 0 ? (
         <p className="text-sm text-zinc-500 text-center py-12">
-          No hay grupos creados. Crea tu primer grupo para comenzar.
+          {search ? "No se encontraron grupos que coincidan con la búsqueda." : "No hay grupos creados. Crea tu primer grupo para comenzar."}
         </p>
       ) : (
         <>
@@ -116,7 +144,7 @@ export default function GroupList() {
               <Button
                 variant="ghost"
                 disabled={page <= 1}
-                onClick={() => fetchGroups(page - 1)}
+                onClick={() => fetchGroups(page - 1, search)}
               >
                 Anterior
               </Button>
@@ -126,7 +154,7 @@ export default function GroupList() {
               <Button
                 variant="ghost"
                 disabled={page >= totalPages}
-                onClick={() => fetchGroups(page + 1)}
+                onClick={() => fetchGroups(page + 1, search)}
               >
                 Siguiente
               </Button>

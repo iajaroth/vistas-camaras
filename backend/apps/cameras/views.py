@@ -1,6 +1,7 @@
 import os
 
 from django.conf import settings
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status, viewsets
@@ -22,6 +23,13 @@ from .services import create_camera_in_group, delete_camera_image, save_camera_i
 
 class CameraGroupViewSet(viewsets.ModelViewSet):
     queryset = CameraGroup.objects.all()
+
+    def get_queryset(self):
+        qs = CameraGroup.objects.all()
+        search = self.request.query_params.get("search", "").strip()
+        if search:
+            qs = qs.filter(Q(name__icontains=search) | Q(code__icontains=search))
+        return qs
 
     def get_serializer_class(self):
         if self.action in ("partial_update", "update"):
