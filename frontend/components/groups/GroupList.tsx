@@ -9,7 +9,7 @@ import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 
 interface GroupThumbnails {
-  [groupId: number]: { compound_code: string; thumbnail_path: string | null }[];
+  [groupId: number]: { compound_code: string; thumbnail_path: string | null; updated_at: string }[];
 }
 
 export default function GroupList() {
@@ -42,6 +42,7 @@ export default function GroupList() {
             thumbMap[group.id] = camRes.data.results.map((cam) => ({
               compound_code: cam.compound_code,
               thumbnail_path: cam.day_thumbnail_path || cam.night_thumbnail_path || null,
+              updated_at: cam.updated_at,
             }));
           } catch {
             thumbMap[group.id] = [];

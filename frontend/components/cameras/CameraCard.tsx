@@ -10,10 +10,11 @@ interface CameraCardProps {
 }
 
 export default function CameraCard({ camera, onClick }: CameraCardProps) {
+  const cacheBuster = new Date(camera.updated_at).getTime();
   const thumbUrl = camera.day_thumbnail_path
-    ? `${API_BASE}/media/${camera.day_thumbnail_path}`
+    ? `${API_BASE}/media/${camera.day_thumbnail_path}?v=${cacheBuster}`
     : camera.night_thumbnail_path
-      ? `${API_BASE}/media/${camera.night_thumbnail_path}`
+      ? `${API_BASE}/media/${camera.night_thumbnail_path}?v=${cacheBuster}`
       : null;
 
   const hasImage = !!camera.day_view_path;

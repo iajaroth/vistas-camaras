@@ -129,7 +129,8 @@ export default function CameraDetailModal({
 
   function getImageUrl(path: string) {
     if (!path) return null;
-    return `${API_BASE}/media/${path}`;
+    const v = camera ? new Date(camera.updated_at).getTime() : Date.now();
+    return `${API_BASE}/media/${path}?v=${v}`;
   }
 
   if (!open) return null;

@@ -8,6 +8,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
 interface CameraThumbnail {
   compound_code: string;
   thumbnail_path: string | null;
+  updated_at: string;
 }
 
 interface GroupCardProps {
@@ -31,7 +32,7 @@ export default function GroupCard({ group, thumbnails, onDelete }: GroupCardProp
                 {cam.thumbnail_path ? (
                   <>
                     <img
-                      src={`${API_BASE}/media/${cam.thumbnail_path}`}
+                      src={`${API_BASE}/media/${cam.thumbnail_path}?v=${new Date(cam.updated_at).getTime()}`}
                       alt={cam.compound_code}
                       className="w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-opacity duration-300"
                     />
